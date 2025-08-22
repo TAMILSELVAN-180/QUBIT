@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QUBIT - Trip Plan</title>
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    background-color: #121212;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  .trip-container {
+    background: #1e1e1e;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(255,102,0,0.5);
+    width: 400px;
+    text-align: center;
+  }
+
+  h2 {
+    color: #ff6600;
+    margin-bottom: 20px;
+  }
+
+  #tripSummary p {
+    margin: 8px 0;
+  }
+
+  .place-card {
+    background: #2c2c2c;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .place-card:hover {
+    background: #ff6600;
+    color: black;
+  }
+
+  .place-card h3 {
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="trip-container">
+  <h2>Trip Plan</h2>
+  <div id="tripSummary"></div>
+
+  <div id="placesContainer"></div>
+</div>
+
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+let destination = urlParams.get('place') || "Ooty";
+destination = destination.charAt(0).toUpperCase() + destination.slice(1).toLowerCase();
+
+const members = urlParams.get('members') || 1;
+const date = urlParams.get('date') || "2025-08-21";
+
+document.getElementById('tripSummary').innerHTML = `
+  <p>Destination: <strong>${destination}</strong></p>
+  <p>Members: <strong>${members}</strong></p>
+  <p>Date: <strong>${date}</strong></p>
+`;
+
+const placesData = {
+  "Ooty": ["Ooty Lake", "Botanical Garden", "Doddabetta Peak", "Rose Garden"],
+  "Kodaikanal": ["Kodaikanal Lake", "Coaker's Walk", "Pillar Rocks", "Bryant Park"],
+  "Chennai": ["Marina Beach", "Kapaleeshwarar Temple", "Guindy National Park", "Fort St. George"]
+};
+
+const container = document.getElementById("placesContainer");
+const places = placesData[destination] || [];
+
+if (places.length === 0) {
+  container.innerHTML = "<p style='color:white; text-align:center;'>No places found for this destination.</p>";
+} else {
+  places.forEach(place => {
+    const card = document.createElement("div");
+    card.className = "place-card";
+    card.innerHTML = `<h3>${place}</h3>`;
+    
+    // When clicking the card, go to the next page with type selection
+    card.addEventListener('click', () => {
+      // Redirect to type page with place info
+      const url = `type.html?place=${encodeURIComponent(place)}&members=${members}&date=${date}`;
+      window.location.href = url;
+    });
+
+    container.appendChild(card);
+  });
+}
+</script>
+
+</body>
+</html>
